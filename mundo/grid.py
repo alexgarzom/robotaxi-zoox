@@ -25,3 +25,15 @@ class Grid:
                    return(i,j)              #Retorna la posición
         return None                         #Si no encuentra retorna None
         
+    def _encontrar_todas_posiciones(slef, valor):
+        posiciones=[]                       #Guarda las posiciones
+        for i in range(self.filas):         #Recorre filas
+            for j in range(self.columnas):  #Recorre las columnas
+                posiciones.append((i,j))
+        return posiciones
+    
+    def es_valida(self,fila,col):   #Verifica si una coordenada está dentro del grid
+
+        return 0 <= fila < self.filas and 0 <= col < self.columnas #Dentro de los limites
+
+            
