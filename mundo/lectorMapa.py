@@ -23,7 +23,7 @@ def leer_mapa():
 
 ###  PRUEBA PARA VER SI CARGA BIEN EL ARCHIVO .TXT" ###
 
-'''  
+ 
 if __name__ == "__main__":
     print("Probando lector de mapa...")
     matriz = leer_mapa()
@@ -35,4 +35,3 @@ if __name__ == "__main__":
             print(f"Fila {i}: {fila}")
     else:
         print("Error al leer el archivo")
-'''
