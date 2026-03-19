@@ -28,11 +28,11 @@ if __name__ == "__main__":
     print("Probando lector de mapa...")
     matriz = leer_mapa()
     if matriz:
-        print("✅ Archivo leído correctamente")
+        print("Archivo leído correctamente")
         print(f"Dimensiones: {len(matriz)} filas x {len(matriz[0])} columnas")
         print("\nMapa completo:")
         for i, fila in enumerate(matriz):
             print(f"Fila {i}: {fila}")
     else:
-        print("❌ Error al leer el archivo")
+        print("Error al leer el archivo")
 '''

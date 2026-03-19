@@ -17,4 +17,11 @@ class Grid:
         self.inicio=self._encontrar_posicion(Grid.INICIO)                 #Posición inicio
         self.destino=self._encontrar_posicion(Grid.DESTINO)               #Posición inicio
         self.pasajeros=self._encontrar_todas_posiciones(Grid.PASAJERO)    #Lista de pasajeros
+
+    def _encontrar_posiciones(self,valor):  #Busca la primer celda con un valor especifico"
+        for i in range(self.filas):         #Recorre filas
+            for j in range(self.columnas):  #Recorre columnas
+               if self.matriz[i][j]==valor: #Si encuentra el valor
+                   return(i,j)              #Retorna la posición
+        return None                         #Si no encuentra retorna None
         
