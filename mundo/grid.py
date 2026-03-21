@@ -1,3 +1,5 @@
+
+
 class Grid:
     
     LIBRE = 0
@@ -57,7 +59,7 @@ class Grid:
         fila,col = nodo.posicion
         
         #4 Movimientos posibles
-        movimientos = [(.1,0),(1,0),(0,-1),(0,1)]
+        movimientos = [(-1,0),(1,0),(0,-1),(0,1)]
         
         for df, dc in movimientos:
             nueva_fila = fila + df

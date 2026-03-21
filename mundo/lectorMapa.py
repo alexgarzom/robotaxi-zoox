@@ -1,5 +1,5 @@
 def leer_mapa():
-    ruta = "robotaxi-zoox\mapas\Prueba1.txt"      # Ruta hacia el mapa
+    ruta = r"mapas\Prueba1.txt"      # Ruta hacia el mapa
 
     try:
         with open(ruta, 'r') as archivo:              # Abre el archivo en modo lectura
