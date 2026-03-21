@@ -50,7 +50,38 @@ class Grid:
             return 1                                                        # Costo 1 para flujo bajo
         elif tipo == Grid.FLUJO_ALTO:
             return 7                                                        # Costo 7 para flujo alto
-        return 1                                                            # Valor por defecto
+        return 1         
+    
+    def get_vecinos(self,nodo):
+        vecinos = []
+        fila,col = nodo.posicion
+        
+        #4 Movimientos posibles
+        movimientos = [(.1,0),(1,0),(0,-1),(0,1)]
+        
+        for df, dc in movimientos:
+            nueva_fila = fila + df
+            nueva_col = col + dc
+            
+            if self.es_transitable(nueva_fila,nueva_col):
+                #se calcula el costo de entrada en esa celda
+                costo = nodo.g + self.costo_movimiento(nueva_fila,nueva_col)
+                
+                #ahora ver si hay un pasajero en esa celda y recogerlo automáticamente
+                nuevos_pasajeros = set(nodo.pasajeros_recogidos)
+                if self.matriz[nueva_fila][nueva_col] == Grid.PASAJERO:
+                    nuevos_pasajeros.add((nueva_fila,nueva_col))
+                    
+                from mundo.node import Node
+                
+                vecino = Node(
+                    posicion = (nueva_fila,nueva_col),
+                    pasajeros_recogidos = frozenset(nuevos_pasajeros),
+                    padre = nodo,
+                    g = costo
+                )
+                vecinos.append(vecino)  
+        return vecinos                                                 # Valor por defecto
 
 
 if __name__ == "__main__":
@@ -63,3 +94,4 @@ if __name__ == "__main__":
         print(f"Inicio: {grid.inicio}")
         print(f"Destino: {grid.destino}")
         print(f"Pasajeros: {grid.pasajeros}")
+
