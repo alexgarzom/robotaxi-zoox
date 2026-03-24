@@ -3,7 +3,7 @@ from mundo.lectorMapa import leer_mapa
 from mundo.node import Node
 from algoritmosBusqueda.noinformada.busCostoUni import BusquedaCosto
 from algoritmosBusqueda.noinformada.busAmplitud import BusquedaAmplitud
-
+from algoritmosBusqueda.noinformada.busProfundidad import BusquedaProfundidad
 # 1. Cargar el mapa
 matriz = leer_mapa()
 grid   = Grid(matriz)
@@ -37,6 +37,12 @@ resultado = bfs.buscar(nodo_inicial, pasajeros_totales)
 
 bcu = BusquedaCosto(grid)
 resultado2 = bcu.buscar(nodo_inicial, pasajeros_totales)
+
+#Ejecutar por profundidad evitando ciclos
+dfs = BusquedaProfundidad(grid)
+resultado3 = dfs.buscar(nodo_inicial, pasajeros_totales)
+
+
 # 5. Ver resultado
 if resultado:
     print("✅ BFS - Solución encontrada!")
@@ -48,10 +54,19 @@ else:
     print("❌ BFS - No se encontró solución")
 
 if resultado2:
-    print("✅ UCS - Solución encontrada!")
+    print("✅ bcu - Solución encontrada!")
     print(f"Camino: {resultado2['camino']}")
     print(f"Nodos expandidos: {resultado2['nodos_expandidos']}")
     print(f"Profundidad: {resultado2['profundidad']}")
     print(f"Costo: {resultado2['costo']}")
+else:
+    print("❌ UCS - No se encontró solución")
+
+if resultado3:
+    print("✅ dfs - Solución encontrada!")
+    print(f"Camino: {resultado3['camino']}")
+    print(f"Nodos expandidos: {resultado3['nodos_expandidos']}")
+    print(f"Profundidad: {resultado3['profundidad']}")
+    print(f"Costo: {resultado3['costo']}")
 else:
     print("❌ UCS - No se encontró solución")
