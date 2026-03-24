@@ -1,6 +1,7 @@
 from mundo.grid import Grid
 from mundo.lectorMapa import leer_mapa
 from mundo.node import Node
+from algoritmosBusqueda.noinformada.busCostoUni import BusquedaCosto
 from algoritmosBusqueda.noinformada.busAmplitud import BusquedaAmplitud
 
 # 1. Cargar el mapa
@@ -31,12 +32,26 @@ for v in grid.get_vecinos(nodo_prueba):
 bfs       = BusquedaAmplitud(grid)
 resultado = bfs.buscar(nodo_inicial, pasajeros_totales)
 
+
+# ejecutar por costo
+
+bcu = BusquedaCosto(grid)
+resultado2 = bcu.buscar(nodo_inicial, pasajeros_totales)
 # 5. Ver resultado
 if resultado:
-    print("✅ Solución encontrada!")
+    print("✅ BFS - Solución encontrada!")
     print(f"Camino: {resultado['camino']}")
     print(f"Nodos expandidos: {resultado['nodos_expandidos']}")
     print(f"Profundidad: {resultado['profundidad']}")
     print(f"Costo: {resultado['costo']}")
 else:
-    print("❌ No se encontró solución")
+    print("❌ BFS - No se encontró solución")
+
+if resultado2:
+    print("✅ UCS - Solución encontrada!")
+    print(f"Camino: {resultado2['camino']}")
+    print(f"Nodos expandidos: {resultado2['nodos_expandidos']}")
+    print(f"Profundidad: {resultado2['profundidad']}")
+    print(f"Costo: {resultado2['costo']}")
+else:
+    print("❌ UCS - No se encontró solución")

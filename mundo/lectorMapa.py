@@ -1,5 +1,7 @@
+import os
+
 def leer_mapa():
-    ruta = r"mapas\Prueba1.txt"      # Ruta hacia el mapa
+    ruta = os.path.join("mapas","Prueba1.txt")   # Ruta hacia el mapa
 
     try:
         with open(ruta, 'r') as archivo:              # Abre el archivo en modo lectura
