@@ -31,6 +31,5 @@ class BusquedaAmplitud:
                 }
         
             for vecino in self.grid.get_vecinos(nodo):
-                frontera.append(vecino)
-
+                frontera.append(vecino) #se agrega a la frontera (nodos por explorar)
         return None
