@@ -5,6 +5,7 @@ from algoritmosBusqueda.noinformada.busCostoUni import BusquedaCosto
 from algoritmosBusqueda.noinformada.busAmplitud import BusquedaAmplitud
 from algoritmosBusqueda.noinformada.busProfundidad import BusquedaProfundidad
 from algoritmosBusqueda.informada.algoritmoAestrella import a_estrella
+from algoritmosBusqueda.informada.algoritmoAvara import avara
 
 # 1. Cargar el mapa
 matriz = leer_mapa()
@@ -105,6 +106,58 @@ if __name__ == "__main__":
 
     # Ejecuta el algoritmo A*
     resultado = a_estrella(grid, grid.inicio, grid.destino, grid.pasajeros)
+
+    # Muestra el resultado
+    if resultado:
+        print("\n✅ SOLUCIÓN ENCONTRADA")
+        print(f"Costo: {resultado['costo']}")
+        print(f"Nodos expandidos: {resultado['nodos_expandidos']}")
+        print(f"Profundidad: {resultado['profundidad']}")
+        print(f"Pasos: {len(resultado['camino'])}")
+
+        # Verifica que se recogieron todos los pasajeros
+        recogidos = []
+        for pos in resultado['camino']:
+            if pos in grid.pasajeros:
+                recogidos.append(pos)
+
+        print(f"\nPasajeros recogidos: {recogidos}")
+        if set(recogidos) == set(grid.pasajeros):
+            print("✅ Todos los pasajeros fueron recogidos")
+        else:
+            print("❌ Faltan pasajeros")
+
+        # Verifica que termina en el destino correcto
+        if resultado['camino'][-1] == grid.destino:
+            print("✅ Termina en destino correcto")
+        else:
+            print("❌ Termina en otro lugar")
+    else:
+        print("\n❌ No se encontró solución")
+
+        # ==================== PRUEBA AVARA ====================
+# Bloque principal que se ejecuta solo si este archivo se ejecuta directamente
+if __name__ == "__main__":
+    print("="*60)
+    print("PRUEBA DEL ALGORITMO AVARA")
+    print("="*60)
+
+    # Lee el mapa desde el archivo
+    matriz = leer_mapa()
+    if not matriz:
+        print("❌ No se pudo cargar el mapa")
+        exit(1)
+
+    # Crea el grid (mundo) con la matriz leída
+    grid = Grid(matriz)
+
+    # Muestra información del grid
+    print(f"Inicio: {grid.inicio}")
+    print(f"Destino: {grid.destino}")
+    print(f"Pasajeros: {grid.pasajeros}")
+
+    # Ejecuta el algoritmo Avara
+    resultado = avara(grid, grid.inicio, grid.destino, grid.pasajeros)
 
     # Muestra el resultado
     if resultado:
