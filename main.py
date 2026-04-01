@@ -16,11 +16,11 @@ from algoritmosBusqueda.informada.algoritmoAestrella import a_estrella
 # Colores en formato RGB
 COLORES = {
     Grid.LIBRE: (255, 255, 255),      # blanco para flujo
-    Grid.MURO: (0, 0, 0),             # negro no transitable
+    Grid.MURO: (128, 128, 128),       # gris no transitable
     Grid.INICIO: (0, 0, 255),         # azul punto de partida
     Grid.FLUJO_ALTO: (255, 0, 0),     # rojo para trafico alto
     Grid.PASAJERO: (0, 255, 0),       # verde pasa el pasajero
-    Grid.DESTINO: (255, 255, 0),      # amarillo para el destino finak
+    Grid.DESTINO: (255, 165, 0),      # Naranja para el destino finak
 }
 
 
