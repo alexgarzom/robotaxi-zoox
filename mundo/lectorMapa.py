@@ -1,7 +1,9 @@
 import os
 
-def leer_mapa():
-    ruta = os.path.join("mapas","Prueba1.txt")   # Ruta hacia el mapa modificada para que funcione tanto en linux como en windows
+def leer_mapa(ruta=None):
+    if ruta is None:
+
+        ruta = os.path.join("mapas","Prueba1.txt")   # Ruta por defecto hacia el mapa modificada para que funcione tanto en linux como en windows
 
     try:
         with open(ruta, 'r') as archivo:              # Abre el archivo en modo lectura
