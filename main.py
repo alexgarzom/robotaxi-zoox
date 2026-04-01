@@ -1,75 +1,168 @@
 import sys
 import os
-import time
 
-# Agregar la carpeta actual al path para importar módulos
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from mundo.lectorMapa import leer_mapa
+ruta_raiz = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  #Agrega la raiz al path de python para importar modulos
+sys.path.insert(0, ruta_raiz)
+
+import pygame
+import sys
+
 from mundo.grid import Grid
+from mundo.lectorMapa import leer_mapa
 from algoritmosBusqueda.informada.algoritmoAestrella import a_estrella
-from ui.visualizador import Visualizador
 
 
-def main():
+# Colores en formato RGB
+COLORES = {
+    Grid.LIBRE: (255, 255, 255),      # blanco para flujo
+    Grid.MURO: (0, 0, 0),             # negro no transitable
+    Grid.INICIO: (0, 0, 255),         # azul punto de partida
+    Grid.FLUJO_ALTO: (255, 0, 0),     # rojo para trafico alto
+    Grid.PASAJERO: (0, 255, 0),       # verde pasa el pasajero
+    Grid.DESTINO: (255, 255, 0),      # amarillo para el destino finak
+}
 
-    print("="*60)
-    print("ROBOTAXI ZOOX - BÚSQUEDA INFORMADA CON A*")
-    print("="*60)
-    
-    # 1. Cargar el mapa
-    print("\n📖 Cargando mapa...")
-    matriz = leer_mapa()
-    if not matriz:
-        print("❌ No se pudo cargar el mapa")
-        return
-    
-    # 2. Crear el grid
-    grid = Grid(matriz)
-    print(f"✅ Mapa cargado: {grid.filas}x{grid.columnas}")
-    print(f"🚀 Inicio: {grid.inicio}")
-    print(f"🎯 Destino: {grid.destino}")
-    print(f"👥 Pasajeros: {grid.pasajeros}")
-    
-    # 3. Ejecutar A*
-    print("\n🔍 Ejecutando algoritmo A*...")
-    
-    tiempo_inicio = time.time()
-    resultado = a_estrella(grid, grid.inicio, grid.destino, grid.pasajeros)
-    tiempo_total = time.time() - tiempo_inicio
-    
-    # 4. Mostrar reporte
-    print("\n" + "="*60)
-    print("REPORTE DE BÚSQUEDA")
-    print("="*60)
-    
-    if not resultado:
-        print("❌ No se encontró una ruta válida")
-        return
-    
-    print(f"✅ Solución encontrada")
-    print(f"  Algoritmo: A* (informada)")
-    print(f"  Heurística: Distancia Manhattan")
-    print(f"  Costo total: {resultado['costo']}")
-    print(f"  Nodos expandidos: {resultado['nodos_expandidos']}")
-    print(f"  Profundidad: {resultado['profundidad']}")
-    print(f"  Longitud del camino: {len(resultado['camino'])} pasos")
-    print(f"  Tiempo de cómputo: {tiempo_total:.4f} segundos")
-    
-    # Verificar pasajeros recogidos
-    recogidos = []
-    for pos in resultado['camino']:
-        if pos in grid.pasajeros:
-            recogidos.append(pos)
-    print(f"  Pasajeros recogidos: {recogidos}")
-    
-    # 5. Mostrar animación
-    print("\n🎬 Mostrando animación del recorrido...")
-    print("   (Cierra la ventana para salir)")
-    
-    vis = Visualizador(grid, "Robotaxi Zoox - A*")
-    vis.animar_camino(resultado['camino'], delay=200)
+
+COLOR_CAMINO = (0, 255, 255)          # cian para el recorrido
+COLOR_CAMINO_RESALTE = (128, 0, 128)  # morado para resaltar más
+COLOR_FONDO = (200, 200, 200)         # gris para fondo
+
+##Config de las ventanas
+
+TAM_CELDA = 60   #Tamaño de celdas en px
+FILAS = 10       #Num de filas del mapa
+COLUMNAS = 10    #Num de col del mapa
+
+ANCHO = COLUMNAS * TAM_CELDA    #Ancho 600px
+ALTO = FILAS * TAM_CELDA        #Alto 600px
+
+
+class Visualizador:
+
+    def __init__(self, grid, titulo="robotaxi-zoox"):
+        self.grid = grid                                   #Guarda el grid del mundo
+        self.tam_celda = TAM_CELDA                         #Tamaño de la celda
+        self.ancho = grid.columnas * self.tam_celda        #Calcu el ancho
+        self.alto = grid.filas * self.tam_celda            #Calcu el alto
+
+        pygame.init()                                      #Inicializa pygame
+        self.ventana = pygame.display.set_mode((self.ancho, self.alto))
+        pygame.display.set_caption(titulo)                 #Titulo de la ventana
+        self.reloj = pygame.time.Clock()                   #Controla los fps con un reloj
+        
+      
+        self.pasajeros_originales = set(grid.pasajeros)    # Guarda los pasajeros originales para saber dónde están
+
+    def dibujar_grid(self, camino=None, paso_actual=0):
+        self.ventana.fill(COLOR_FONDO)                     #Limpia la pantalla
+
+        pasajeros_recogidos = set()                        # Obtener los pasajeros que ya han sido recogidos hasta este paso
+        if camino and paso_actual < len(camino):
+            for k in range(paso_actual + 1):
+                pos = camino[k]
+                if pos in self.pasajeros_originales:
+                    pasajeros_recogidos.add(pos)            #Se marca como recogido
+
+                                                           #Dibuja cada celda
+        for i in range(self.grid.filas):
+            for j in range(self.grid.columnas):
+                x = j * self.tam_celda                      #Coordenada X
+                y = i * self.tam_celda                      #Coodenada Y
+                rect = pygame.Rect(x, y, self.tam_celda, self.tam_celda)
+
+                tipo = self.grid.matriz[i][j]               #Tipo de celda
+                
+              
+                if tipo == Grid.PASAJERO and (i, j) in pasajeros_recogidos:   #Si es un pasajero y ya fue recogido, mostrarlo como celda libre
+                    color = COLORES[Grid.LIBRE]
+                else:
+                    color = COLORES.get(tipo, COLORES[Grid.LIBRE])  #Desaparece el pasajero
+
+                pygame.draw.rect(self.ventana, color, rect)
+                pygame.draw.rect(self.ventana, (100, 100, 100), rect, 1)
+
+        if camino and paso_actual < len(camino):     #Dibuja el camino hasta el paso actual (con resalte)
+            for k in range(paso_actual + 1):
+                i, j = camino[k]
+                x = j * self.tam_celda
+                y = i * self.tam_celda
+                rect = pygame.Rect(x, y, self.tam_celda, self.tam_celda)
+                
+                
+                pygame.draw.rect(self.ventana, COLOR_CAMINO_RESALTE, rect, 6)  #Dibuja un borde grueso en color morado para resaltar
+                
+                             
+                if k == paso_actual:                             #Dibuja un círculo en la posición actual (para más énfasis)
+                    centro = (x + self.tam_celda // 2, y + self.tam_celda // 2)
+                    pygame.draw.circle(self.ventana, (255, 255, 255), centro, self.tam_celda // 3)
+                    pygame.draw.circle(self.ventana, COLOR_CAMINO_RESALTE, centro, self.tam_celda // 3, 3)
+
+        pygame.display.flip()                          #Actualiza la pantalla
+
+    def animar_camino(self, camino, delay=300):
+        if not camino:
+            print("No hay camino para animar")
+            return
+
+        ejecutando = True
+        paso = 0
+
+        while ejecutando:                                #Maneja los eventos de pygames, cierre de ventana
+           
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    ejecutando = False
+
+           
+            self.dibujar_grid(camino, paso)             #Dibuja el paso actual
+
+            if paso < len(camino) - 1:                  #Avanza al siguiente paso      
+                paso += 1
+                pygame.time.wait(delay)
+            else:
+                pygame.time.wait(500)                      #Cuando termina, y espera a que cierren la ventana
+
+        pygame.quit()
+        sys.exit()
+
+    def esperar_cierre(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+#### PRUEBA ###########
 
 
 if __name__ == "__main__":
-    main()
+    print("="*60)
+    print("PRUEBA DEL VISUALIZADOR")
+    print("="*60)
+
+    matriz = leer_mapa()
+    if not matriz:
+        print("❌ No se pudo cargar el mapa")
+        exit(1)
+
+    grid = Grid(matriz)
+    print(f"Inicio: {grid.inicio}")
+    print(f"Destino: {grid.destino}")
+    print(f"Pasajeros: {grid.pasajeros}")
+
+    print("\n🔍 Ejecutando A*...")
+    resultado = a_estrella(grid, grid.inicio, grid.destino, grid.pasajeros)
+
+    if not resultado:
+        print("❌ No se encontró solución")
+        exit(1)
+
+    print(f"✅ Solución encontrada. Costo: {resultado['costo']}")
+    print(f"Pasos: {len(resultado['camino'])}")
+    print("\n🎬 Mostrando animación...")
+
+    vis = Visualizador(grid, "Robotaxi Zoox - A*")
+    vis.animar_camino(resultado['camino'], delay=200)
+
+    #### PRUEBA ###########
