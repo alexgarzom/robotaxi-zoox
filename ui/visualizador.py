@@ -165,6 +165,7 @@ class Visualizador:
                 f"Pasos en camino  : {len(resultado['camino'])}",
                 f"Costo total      : {resultado['costo']}",
                 f"Tiempo de computo: {resultado['tiempo']} ms",
+                f"Heuristica (h)   : {resultado['heuristica']}",  # ← nueva línea
             ]
 
             for i, linea in enumerate(lineas):

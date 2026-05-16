@@ -46,7 +46,9 @@ def avara(grid, inicio, destino, pasajeros):
                 'camino': nodo.obtener_camino(),        # Lista de posiciones
                 'costo': nodo.g,                        # Costo total acumulado
                 'nodos_expandidos': nodos_expandidos,   # Nodos explorados
-                'profundidad': nodo.profundidad         # Profundidad del nodo
+                'profundidad': nodo.profundidad,
+                
+                   # Profundidad del nodo
             }
 
         estado = (nodo.posicion, nodo.pasajeros_recogidos)  # Clave unica del estado actual

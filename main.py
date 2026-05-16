@@ -86,13 +86,19 @@ if __name__ == "__main__":
         pygame.quit()
         sys.exit()
 
+    from algoritmosBusqueda.informada.algoritmoAestrella import heuristica_manhattan
+
+    resultado['heuristica'] = heuristica_manhattan(
+    resultado['camino'][-1],  # última posición
+    grid.destino
+)
+
     resultado['tiempo'] = round((tiempo_fin - tiempo_inicio)*1000, 2) #en milisegundos
 
     print(f"✅ Solución encontrada. Costo: {resultado['costo']}")
     print(f"Pasos: {len(resultado['camino'])}")
     print(f"camino: {resultado['camino']}")
     print(f"nodos expandidos: {resultado['nodos_expandidos']}")
-    print(f"profundidad: {resultado['profundidad']}")
     print("\n🎬 Mostrando animación...")
 
 
